@@ -7,7 +7,8 @@ jobs:
     steps:
       - uses: primer/figma-action@v1.0.0-alpha.3
         with:
-          args: "format=svg outputDir=./build/"
+          args: "format=svg outputDir=./lib/build/"
         env:
           FIGMA_FILE_URL: "https://www.figma.com/file/P79NGMlJxbXXJ7IkKEok27/Uni-Hub"
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+
