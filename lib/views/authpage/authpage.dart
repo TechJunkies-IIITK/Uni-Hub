@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:unihub/views/authpage/login_widget.dart';
 import 'package:unihub/views/authpage/signup_widget.dart';
+import 'package:unihub/views/authpage/techjunkies_logo.dart';
 
 class AuthPage extends StatefulWidget{
 
@@ -31,6 +32,8 @@ class _AuthPageState extends State<AuthPage>{
 
       appBar: AppBar(
 
+        centerTitle: true,
+
         leading: _isLogInPage ? const SizedBox() : IconButton(onPressed: ()=>_togglePage(), icon: const Icon(Icons.arrow_back)),
 
         title: const Text('UniHub'),
@@ -49,7 +52,7 @@ class _AuthPageState extends State<AuthPage>{
 
       ),
 
-      floatingActionButton: const Text('Powered By Logo Here'),
+      floatingActionButton: const TechJunkiesLogo(),
 
     );
 
