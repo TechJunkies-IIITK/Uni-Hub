@@ -1,16 +1,26 @@
-# unihub
+# uni-hub
 
 A real time voice chat application.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+MVC ( Model View Controller) software design pattern:-
 
-A few resources to get you started if this is your first Flutter project:
+* Model - model folder will contain models i.e. data structures/interfaces/classes
+* View - view folder will contain all UI elements/widgets 
+* Controller - controller folder will contain logical parts for example AuthController will have all the logic regarding user authentication
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## instructions before pushing code
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* default branch is master don't make direct changes to it
+* before writing code make sure to get latest version code by git pull origin(use github desktop)
+* after pulling write your code
+* before pushing code to github create a new unique branch by using git checkout -b new_local_branch
+* add files (git add .) and commit changes (git commit -m "describe commit")
+* push changes to github - git push -u origin new_local_branch
+* create a pull request from your branch to master branch on github website
+* resolve conflicts and merge pull request
+* once merged successfully delete your branch
+* ====== never use forced push git push -f origin some-branch ===========
+* :)
+
