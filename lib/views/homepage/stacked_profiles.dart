@@ -32,7 +32,7 @@ class StackedProfiles extends StatelessWidget{
 
           Container(
 
-              margin: EdgeInsets.all( padding * index),
+              margin: EdgeInsets.only( left: padding * index),
 
               decoration: BoxDecoration(
 
@@ -60,7 +60,7 @@ class StackedProfiles extends StatelessWidget{
 
       ).toList()..add(Container(
 
-          margin: EdgeInsets.all(padding * index),
+          margin: EdgeInsets.only( left: padding * index),
 
           decoration: BoxDecoration(
 

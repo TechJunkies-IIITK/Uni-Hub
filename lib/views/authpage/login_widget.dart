@@ -36,11 +36,27 @@ class LoginWidget extends StatelessWidget{
 
               hintText: 'Mobile No/Email Address',
 
+              enabledBorder: OutlineInputBorder(
+
+                borderSide: BorderSide( color: Colors.blueAccent, width: 2.0),
+
+                borderRadius: BorderRadius.all(Radius.circular(5.0))
+
+              ),
+
+              errorBorder: OutlineInputBorder(
+
+                borderSide: BorderSide( color: Colors.redAccent, width: 2.0),
+
+                borderRadius: BorderRadius.all(Radius.circular(5.0))
+
+              ),
+
             ),
 
             validator: (String? value){
 
-              if(value == null)return 'No value found';
+              if(value == null || value.isEmpty)return "This field can't be empty";
 
             },
 
@@ -55,6 +71,22 @@ class LoginWidget extends StatelessWidget{
             decoration: const InputDecoration(
 
               hintText: 'password',
+
+              enabledBorder: OutlineInputBorder(
+
+                  borderSide: BorderSide( color: Colors.blueAccent, width: 2.0),
+
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))
+
+              ),
+
+              errorBorder: OutlineInputBorder(
+
+                  borderSide: BorderSide( color: Colors.redAccent, width: 2.0),
+
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))
+
+              ),
 
             ),
 
