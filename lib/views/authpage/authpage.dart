@@ -42,13 +42,14 @@ class _AuthPageState extends State<AuthPage>{
 
       body: Center(
 
-        child: SingleChildScrollView(
+          child: _isLogInPage ? SingleChildScrollView(
 
-          controller: _scrollController,
+              controller: _scrollController,
 
-          child: _isLogInPage ? LoginWidget(()=>_togglePage()) : const SignUpWidget(),
+              child: LoginWidget(()=>_togglePage())
 
-        ),
+          ): const SignUpWidget(),
+
 
       ),
 
