@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class SignUpWidget extends StatefulWidget{
 
@@ -175,27 +176,17 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
               child: Center(
 
-                child: TextFormField(
+                child: PinCodeTextField(
 
                   controller: _otpController,
 
-                  decoration: const InputDecoration(
+                  appContext: context,
 
-                    hintText: 'Enter OTP',
+                  length: 6,
 
-                  ),
+                  onChanged: (value){_incrementStep();},
 
-                  validator: (String? value){
-
-                    if(value == null)return 'No value found';
-
-                  },
-
-                  onFieldSubmitted: (String username){
-                    _incrementStep();
-                  },
-
-                ),
+                )
 
               )
 
