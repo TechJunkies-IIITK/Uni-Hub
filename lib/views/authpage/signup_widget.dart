@@ -21,9 +21,19 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
   final TextEditingController _passwordController = TextEditingController();
 
+  final TextEditingController _otpController = TextEditingController();
+
   void _incrementStep() => setState(()=>_currentStep++);
 
+  void _decrementStep() => setState(()=>_currentStep=_currentStep>0?_currentStep-1:0);
+
   void _setMethod(bool b) => setState(()=>_emailMethod = b);
+
+  void _onContinue(){
+
+    if(_currentStep<3)_incrementStep();
+
+  }
 
   @override
 
@@ -31,15 +41,29 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
     return Stepper(
 
+      type: StepperType.horizontal,
+
       currentStep: _currentStep,
+
+      onStepTapped: (int index)=> setState(() {
+
+        _currentStep = index;
+
+      }),
+
+      onStepContinue: _onContinue,
+
+      onStepCancel: _decrementStep,
 
       steps: [
 
         Step(
 
-            title: const Text('Choose one method to sign up'),
+            title: const Text(''),
 
             isActive: _currentStep>=0,
+
+            state: _currentStep==0 ? StepState.editing :  StepState.complete,
 
             content: Container(
 
@@ -52,6 +76,8 @@ class _SignUpWidgetState extends State<SignUpWidget>{
                 mainAxisSize: MainAxisSize.max,
 
                 children: [
+
+                  const Text('Choose One Method To Sign Up'),
 
                   TextButton(
 
@@ -79,9 +105,11 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
         Step(
 
-            title: _emailMethod ? const Text('Enter Your Email') : const Text('Enter Your Mobile Number'),
+            title: const Text(''),
 
             isActive: _currentStep>=1,
+
+            state: _currentStep==1 ? StepState.editing :  ( _currentStep>1? StepState.complete : StepState.disabled),
 
             content: Container(
 
@@ -89,15 +117,27 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
               margin: const EdgeInsets.all(2),
 
-              child: Center(
+              child: Chip(
 
-                child: TextFormField(
+                avatar: _emailMethod ? null : const Text('🇮🇳+91'),
+
+                label: TextFormField(
+
+                  keyboardType: _emailMethod ? TextInputType.emailAddress : TextInputType.number ,
 
                   controller: _usernameController,
 
                   decoration: InputDecoration(
 
                     hintText: _emailMethod ? 'Email' : 'Mobile Number',
+
+                    border: InputBorder.none,
+
+                    enabledBorder: InputBorder.none,
+
+                    errorBorder: InputBorder.none,
+
+                    disabledBorder: InputBorder.none
 
                   ),
 
@@ -121,11 +161,11 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
         Step(
 
-          title: const Text('Enter OTP'),
+          title: const Text(''),
 
           isActive: _currentStep>=2,
 
-          subtitle: Text("Enter the OTP sent to your ${_emailMethod ? 'Email' : 'Mobile Number'}"),
+            state: _currentStep==2 ? StepState.editing :  ( _currentStep>2? StepState.complete : StepState.disabled),
 
           content: Container(
 
@@ -136,6 +176,8 @@ class _SignUpWidgetState extends State<SignUpWidget>{
               child: Center(
 
                 child: TextFormField(
+
+                  controller: _otpController,
 
                   decoration: const InputDecoration(
 
@@ -163,9 +205,11 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
         Step(
 
-            title: const Text('Enter Password'),
+            title: const Text(''),
 
             isActive: _currentStep>=3,
+
+            state: _currentStep==3 ? StepState.editing :  ( _currentStep>3? StepState.complete : StepState.disabled),
 
             content: Container(
 
