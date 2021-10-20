@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:unihub/utils/verifier.dart';
+import 'package:unihub/views/snackbar.dart';
 
 class SignUpWidget extends StatefulWidget{
 
@@ -22,7 +24,7 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
   final TextEditingController _passwordController = TextEditingController();
 
-  final TextEditingController _otpController = TextEditingController();
+  TextEditingController _otpController = TextEditingController();
 
   void _incrementStep() => setState(()=>_currentStep++);
 
@@ -32,7 +34,60 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
   void _onContinue(){
 
-    if(_currentStep<3)_incrementStep();
+    switch(_currentStep){
+
+      case 0: _incrementStep(); break;
+
+      case 1: if(_emailMethod){
+
+        if(Verifier.isEmail(_usernameController.text)) {
+
+          _incrementStep();
+
+        } else {
+
+          showSnackBar('Invalid email', context, SnackBarType.error);
+
+        }
+
+      }else{
+
+        if(Verifier.isPhone(_usernameController.text)) {
+
+          _incrementStep();
+
+        } else {
+
+          showSnackBar('Invalid Phone', context, SnackBarType.error);
+
+        }
+
+      }
+      break;
+
+      case 2:
+        if(Verifier.isOTP(_otpController.text)) {
+
+          _incrementStep();
+
+        } else{
+
+          showSnackBar('Invalid OTP', context, SnackBarType.error);
+
+        }break;
+
+      case 3:
+        if(_passwordController.text.length >= 8 && _passwordController.text.length <= 25){
+
+          showSnackBar('Sign Up Successful', context, SnackBarType.success);
+
+        }else{
+
+          showSnackBar('Length of password must be between 8 to 25', context, SnackBarType.error);
+
+        }
+
+    }
 
   }
 
@@ -76,15 +131,23 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
                 mainAxisSize: MainAxisSize.max,
 
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                 children: [
 
                   const Text('Choose One Method To Sign Up'),
 
                   TextButton(
 
-                      onPressed: (){_setMethod(true);_incrementStep();},
+                    onPressed: (){_setMethod(true);_incrementStep();},
 
-                      child: const Text('Sign Up With Email')
+                    child: const Text('Sign Up With Email', style: TextStyle( color: Colors.white ),),
+
+                    style: ButtonStyle(
+
+                      backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+
+                    ),
 
                   ),
 
@@ -132,11 +195,17 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
                     hintText: _emailMethod ? 'Email' : 'Mobile Number',
 
+                    suffixText: _emailMethod ? '@iiitkottayam.ac.in' : '',
+
                     border: InputBorder.none,
 
                     enabledBorder: InputBorder.none,
 
-                    errorBorder: InputBorder.none,
+                    errorBorder: const OutlineInputBorder(
+
+                      borderSide: BorderSide( color: Colors.red),
+
+                    ),
 
                     disabledBorder: InputBorder.none
 
@@ -144,13 +213,13 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
                   validator: (String? value){
 
-                    if(value == null)return 'No value found';
+                    if(value == null || ( _emailMethod ? !Verifier.isEmail(value): !Verifier.isPhone(value) ) ) return 'Invalid Email';
+
+                    return null;
 
                   },
 
-                  onFieldSubmitted: (String username){
-                    _incrementStep();
-                  },
+                  onFieldSubmitted: (s)=>_onContinue(),
 
                 ),
 
@@ -176,15 +245,35 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
               child: Center(
 
-                child: PinCodeTextField(
+                child: Builder(
 
-                  controller: _otpController,
+                  builder: (context) {
 
-                  appContext: context,
+                    _otpController = TextEditingController();
 
-                  length: 6,
+                    return PinCodeTextField(
 
-                  onChanged: (value){_incrementStep();},
+                      controller: _otpController,
+
+                      appContext: context,
+
+                      length: 6,
+
+                      onChanged: (v){},
+
+                      onSubmitted: (s)=>_onContinue(),
+
+                      validator: (value){
+
+                        if(value == null || !Verifier.isOTP(value)) return 'Please Enter all 6 digits';
+
+                        return null;
+
+                      },
+
+                    );
+
+                  }
 
                 )
 
@@ -220,17 +309,31 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
                       hintText: 'Enter Password',
 
+                      enabledBorder: InputBorder.none,
+
+                      errorBorder: OutlineInputBorder(
+
+                        borderSide: BorderSide( color: Colors.red),
+
+                      ),
+
+                      disabledBorder: InputBorder.none,
+
+                      focusedBorder: InputBorder.none,
+
                     ),
+
+                    autovalidateMode: AutovalidateMode.always,
 
                     validator: (String? value){
 
-                      if(value == null)return 'No value found';
+                      if(value == null || value.length > 25 || value.length < 8) return 'Password length must be between 8 to 25';
+
+                      return null;
 
                     },
 
-                    onFieldSubmitted: (String username){
-                      // complete sign up
-                    },
+                    onFieldSubmitted: (s)=>_onContinue(),
 
                   ),
 
@@ -238,7 +341,7 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
             )
 
-        )
+        ),
 
       ]
 
