@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:unihub/models/user_details.dart';
+import 'package:unihub/views/homepage/create_room_dialog.dart';
+import 'package:unihub/views/homepage/mutable_app_bar.dart';
+import 'package:unihub/views/homepage/private_room_dialog.dart';
 import 'package:unihub/views/homepage/room_bottom_sheet.dart';
 import 'package:unihub/views/homepage/room_card.dart';
 
@@ -31,11 +34,11 @@ class HomePage extends StatelessWidget{
 
     return Scaffold(
 
-      appBar: AppBar(
+      appBar: PreferredSize(
 
-        automaticallyImplyLeading: false,
+        preferredSize: const Size.fromHeight(60),
 
-        title: const Text('HomePage'),
+        child: MutableAppBar( onSearch: (value){ /*perform search*/ }, ),
 
       ),
 
@@ -59,7 +62,7 @@ class HomePage extends StatelessWidget{
 
           TextButton(
 
-            onPressed: (){},
+            onPressed: ()=>showDialog(context: context, builder: (ctx) => CreateRoomDialog()),
 
             child: const Chip(
 
@@ -68,7 +71,9 @@ class HomePage extends StatelessWidget{
               avatar: Icon(Icons.add ,  color:  Colors.white,),
 
               label: Text('Create New Room',
+
                 style: TextStyle( fontWeight: FontWeight.bold, color: Colors.white),
+
               ),
 
             ),
@@ -77,7 +82,7 @@ class HomePage extends StatelessWidget{
 
           TextButton(
 
-            onPressed: (){},
+            onPressed: ()=>showDialog(context: context, builder: (ctx) => PrivateRoomDialog()),
 
             child: const Chip(
 
