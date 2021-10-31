@@ -1,6 +1,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:unihub/controllers/auth_controller.dart';
+import 'package:unihub/controllers/shared_preferences_controller.dart';
 import 'package:unihub/views/authpage/login_widget.dart';
 import 'package:unihub/views/authpage/signup_widget.dart';
 import 'package:unihub/views/authpage/techjunkies_logo.dart';
@@ -22,11 +24,25 @@ class _AuthPageState extends State<AuthPage>{
 
   void _togglePage() => setState(()=>_isLogInPage=!_isLogInPage);
 
+  Future<void> _checkToken(BuildContext context)async{
+
+    await SharedPrefsController.init();
+
+    if(await AuthController.verify(token: SharedPrefsController.token, userID: SharedPrefsController.userID)){
+
+      //user has already logged in
+      Navigator.pushNamed(context, '/home');
+
+    }
+  }
+
   final ScrollController _scrollController = ScrollController();
 
   @override
 
   Widget build(BuildContext context) {
+
+    _checkToken(context);
 
     return Scaffold(
 
@@ -48,7 +64,7 @@ class _AuthPageState extends State<AuthPage>{
 
               child: LoginWidget(()=>_togglePage())
 
-          ): const SignUpWidget(),
+          ): SignUpWidget(()=>_togglePage()),
 
 
       ),

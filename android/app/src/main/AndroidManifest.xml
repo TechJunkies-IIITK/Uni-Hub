@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pkmkb.unihub">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
+       android:usesCleartextTraffic="true"
         android:label="unihub"
         android:icon="@mipmap/ic_launcher">
         <activity

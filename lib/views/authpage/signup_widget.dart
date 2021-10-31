@@ -6,15 +6,22 @@ import 'package:unihub/views/snackbar.dart';
 
 class SignUpWidget extends StatefulWidget{
 
-  const SignUpWidget({Key? key}) : super(key: key);
+  final Function onSignedUp;
+
+  const SignUpWidget(this.onSignedUp ,{Key? key}) : super(key: key);
 
   @override
 
-  _SignUpWidgetState createState() => _SignUpWidgetState();
+  // ignore: no_logic_in_create_state
+  _SignUpWidgetState createState() => _SignUpWidgetState(onSignedUp);
 
 }
 
 class _SignUpWidgetState extends State<SignUpWidget>{
+
+  final Function onSignedUp;
+
+  _SignUpWidgetState(this.onSignedUp);
 
   int _currentStep = 0;
 
@@ -80,6 +87,8 @@ class _SignUpWidgetState extends State<SignUpWidget>{
         if(_passwordController.text.length >= 8 && _passwordController.text.length <= 25){
 
           showSnackBar('Sign Up Successful', context, SnackBarType.success);
+
+          onSignedUp();
 
         }else{
 

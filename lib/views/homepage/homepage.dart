@@ -46,9 +46,9 @@ class HomePage extends StatelessWidget{
 
         children: [
 
-          const RoomCard(adminName: 'Admin', roomUserCount: 15, roomName: 'DankRoom', roomTopic: 'Dank jokes', profileLinks: lst),
+          const RoomCard(adminName: 'AdminUser', roomUserCount: 15, roomName: 'Hub1', roomTopic: 'jokes', profileLinks: lst),
 
-          RoomCard(adminName: 'Admin', roomUserCount: 15, roomName: 'DankRoom', roomTopic: 'Dank jokes', profileLinks: profiles.map((e) => e.profileLink).toList())
+          RoomCard(adminName: 'AdminUser', roomUserCount: 15, roomName: 'Hub2', roomTopic: 'study', profileLinks: profiles.map((e) => e.profileLink).toList())
 
         ],
 
