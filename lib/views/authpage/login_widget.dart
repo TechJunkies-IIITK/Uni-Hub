@@ -1,6 +1,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:unihub/controllers/auth_controller.dart';
+import 'package:unihub/controllers/shared_preferences_controller.dart';
+import 'package:unihub/utils/verifier.dart';
+import 'package:unihub/views/snackbar.dart';
 
 class LoginWidget extends StatelessWidget{
 
@@ -100,13 +104,39 @@ class LoginWidget extends StatelessWidget{
 
           TextButton(
 
-              onPressed: (){
+              onPressed: ()async{
 
                 String userName = _usernameController.text;
 
                 String password = _passwordController.text;
 
-                Navigator.pushNamed(context, '/home');
+                dynamic data;
+
+                if(Verifier.isPhone(userName)) {
+
+                  data = await AuthController.logIn(password,phone: userName);
+
+                }else if(Verifier.isEmail(userName)) {
+
+                  data = await AuthController.logIn(
+
+                      password, email: userName.endsWith("ac.in") ? userName: '$userName@iiitkottayam.ac.in'
+
+                  );
+
+                }
+
+                if(data !=null && data['message'] == 'success') {
+
+                  SharedPrefsController.setToken(data['token']);
+
+                  SharedPrefsController.setUserID(data['userID']);
+
+                  showSnackBar("Login Success", context, SnackBarType.success);
+
+                  //Navigator.pushNamed(context, '/home');
+
+                }
 
               },
 

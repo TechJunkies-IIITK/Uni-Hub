@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:unihub/controllers/socket_controller.dart';
 import 'package:unihub/models/user_details.dart';
 import 'package:unihub/views/homepage/create_room_dialog.dart';
 import 'package:unihub/views/homepage/mutable_app_bar.dart';
@@ -14,6 +15,8 @@ class HomePage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+
+    SocketController.connect();
 
     const roomName = 'UniHub Developers';
 
@@ -122,7 +125,7 @@ class HomePage extends StatelessWidget{
 
                       context: context,
 
-                      builder: (ctx) => Container( padding: const EdgeInsets.all(10.0),child: RoomBottomSheet(profiles: profiles, roomName: roomName))
+                      builder: (ctx) => Container( padding: const EdgeInsets.all(10.0),child: const RoomBottomSheet(roomName: roomName))
 
                   )
 

@@ -11,4 +11,6 @@ class UserDetails{
 
   UserDetails(String name, String profileLink, this.hasSpeakerRole) : _name = name, _profileLink = profileLink;
 
+  UserDetails.fromJSON(data) : _name = data['name'], _profileLink = data['profileLink'], hasSpeakerRole=true;
+
 }
