@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:unihub/config.dart';
 import 'package:unihub/controllers/shared_preferences_controller.dart';
@@ -15,14 +17,16 @@ class SocketController {
 
   static void connect(){
 
-    socket = io(serverBaseUrl, {
-      'auth' : {
-        'token' : SharedPrefsController.token,
-        'userID' : SharedPrefsController.userID
-      }
-    });
+    socket = io('http://$serverBaseUrl',OptionBuilder().setExtraHeaders({
+      'token' : SharedPrefsController.token,
+      'userID' : SharedPrefsController.userID
+    }).setTransports(['websocket','polling']).build());
 
-    socket.connect();
+    print(SharedPrefsController.token);
+
+    socket.onConnect((data) => print('hehe'));
+
+    socket.onDisconnect((data) => print('not hehe'));
 
   }
 

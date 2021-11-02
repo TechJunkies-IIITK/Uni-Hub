@@ -134,7 +134,7 @@ class LoginWidget extends StatelessWidget{
 
                   showSnackBar("Login Success", context, SnackBarType.success);
 
-                  //Navigator.pushNamed(context, '/home');
+                  Navigator.pushNamed(context, '/home');
 
                 }
 

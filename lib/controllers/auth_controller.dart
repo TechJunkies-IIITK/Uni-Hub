@@ -11,7 +11,7 @@ class AuthController {
     String? phone
   })async{
     final res = await http.post(
-        Uri.https(serverBaseUrl,'/login'),
+        Uri.http(serverBaseUrl,'/login'),
         body: jsonEncode({
           'email': email,
           'phone': phone,
@@ -30,7 +30,7 @@ class AuthController {
     required String profileLink
   })async{
     final res = await http.post(
-        Uri.https(serverBaseUrl,'/signup'),
+        Uri.http(serverBaseUrl,'/signup'),
         body: jsonEncode({
           'email': email,
           'phone': phone,
@@ -48,7 +48,7 @@ class AuthController {
     required int userID
   })async{
     final res = await http.post(
-        Uri.https(serverBaseUrl,'/verify'),
+        Uri.http(serverBaseUrl,'/verify'),
         body: jsonEncode({
           'token': token,
           'userID': userID,
