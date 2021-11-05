@@ -20,8 +20,6 @@ class PrivateRoomDialog extends StatelessWidget{
 
         padding: const EdgeInsets.all(8.0),
 
-        height: 150.0,
-
         decoration: BoxDecoration(
 
             border: Border.all( color: Colors.teal, )

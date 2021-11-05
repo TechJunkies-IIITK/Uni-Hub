@@ -20,8 +20,6 @@ class CreateRoomDialog extends StatelessWidget{
 
         padding: const EdgeInsets.all(8.0),
 
-        height: 400.0,
-
         decoration: BoxDecoration(
 
             border: Border.all( color: Colors.teal, )

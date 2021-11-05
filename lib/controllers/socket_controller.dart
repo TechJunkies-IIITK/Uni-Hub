@@ -9,7 +9,9 @@ import 'package:unihub/models/user_details.dart';
 
 class SocketController {
 
-  static late List<HubDetails> publicHubs = [];
+  static String roomName = '';
+
+  static List<HubDetails> publicHubs = [];
 
   static List<UserDetails> users = [];
 
@@ -22,11 +24,11 @@ class SocketController {
       'userID' : SharedPrefsController.userID
     }).setTransports(['websocket','polling']).build());
 
-    print(SharedPrefsController.token);
-
     socket.onConnect((data) => print('hehe'));
 
     socket.onDisconnect((data) => print('not hehe'));
+
+    initListeners();
 
   }
 

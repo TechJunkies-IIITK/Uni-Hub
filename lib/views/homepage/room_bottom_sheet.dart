@@ -102,7 +102,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
           Wrap(
 
-            children: SocketController.users.where((e) => e.hasSpeakerRole).map((e) => Container(
+            children: SocketController.users.map((e) => Container(
 
               margin: const EdgeInsets.all(10.0),
 
@@ -126,6 +126,8 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
           ),
 
+          /*
+          // future use
           const Text('Audience'),
 
           Wrap(
@@ -152,7 +154,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
             )).toList(),
 
-          ),
+          ),*/
 
         ],
 

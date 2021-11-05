@@ -10,30 +10,20 @@ import 'package:unihub/views/homepage/private_room_dialog.dart';
 import 'package:unihub/views/homepage/room_bottom_sheet.dart';
 import 'package:unihub/views/homepage/room_card.dart';
 
-class HomePage extends StatelessWidget{
+class HomePage extends StatefulWidget{
   const HomePage({Key? key}) : super(key: key);
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>{
+
+  String roomName='';
 
   @override
   Widget build(BuildContext context) {
 
     SocketController.connect();
-
-    const roomName = 'UniHub Developers';
-
-    final profiles = [
-      UserDetails('User1', 'https://picsum.photos/300', true),
-      UserDetails('User2', 'https://picsum.photos/400', true),
-      UserDetails('User3', 'https://picsum.photos/500', true),
-      UserDetails('User4', 'https://picsum.photos/200/300', true),
-      UserDetails('User5', 'https://picsum.photos/250', true),
-      UserDetails('User6', 'https://picsum.photos/350', false),
-      UserDetails('User7', 'https://picsum.photos/300/200', false),
-      UserDetails('User8', 'https://picsum.photos/500', false),
-      UserDetails('User9', 'https://picsum.photos/300', false),
-      UserDetails('User10', 'https://picsum.photos/400', false),
-    ];
-
-    const  lst = ['https://picsum.photos/300','https://picsum.photos/400','https://picsum.photos/200/300','https://picsum.photos/300/400','https://picsum.photos/250','https://picsum.photos/400','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200'];
 
     return Scaffold(
 
@@ -47,13 +37,10 @@ class HomePage extends StatelessWidget{
 
       body: ListView(
 
-        children: [
-
-          const RoomCard(adminName: 'AdminUser', roomUserCount: 15, roomName: 'Hub1', roomTopic: 'jokes', profileLinks: lst),
-
-          RoomCard(adminName: 'AdminUser', roomUserCount: 15, roomName: 'Hub2', roomTopic: 'study', profileLinks: profiles.map((e) => e.profileLink).toList())
-
-        ],
+        children: SocketController.publicHubs.map(
+                (hub) =>
+                RoomCard(adminName: hub.adminName, roomUserCount: hub.users.length, roomName: hub.name, roomTopic: hub.topic, profileLinks: hub.users.map((e) => e.profileLink).toList())
+        ).toList(),
 
       ),
 
@@ -105,64 +92,63 @@ class HomePage extends StatelessWidget{
 
       ),
 
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: roomName.isEmpty? const SizedBox(height: 0,width: 0,): BottomAppBar(
 
-        child: Column(
+          child: Column(
 
-          mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.min,
 
-          children: [
+            children: [
 
-            Tooltip(
+              Tooltip(
 
-              message: 'Open Bottom Sheet',
+                message: 'Open Bottom Sheet',
 
-              child: IconButton(
+                child: IconButton(
 
-                  icon: const Icon(Icons.remove),
+                    icon: const Icon(Icons.remove),
 
-                  onPressed: () => showModalBottomSheet(
+                    onPressed: () => showModalBottomSheet(
 
-                      context: context,
+                        context: context,
 
-                      builder: (ctx) => Container( padding: const EdgeInsets.all(10.0),child: const RoomBottomSheet(roomName: roomName))
+                        builder: (ctx) => Container( padding: const EdgeInsets.all(10.0),child: RoomBottomSheet(roomName: roomName))
 
+                    )
+
+                ),
+              ),
+
+              Row(
+
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                children: [
+
+                  Text(roomName,style: const TextStyle( fontSize: 20.0, color: Colors.blue),),
+
+                  Tooltip(
+
+                    message: 'Leave Room',
+
+                    child: IconButton(
+
+                        onPressed: (){},
+
+                        icon: const Icon(Icons.close)
+
+                    ),
                   )
 
+                ],
+
               ),
-            ),
-
-            Row(
-
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-              children: [
-
-                const Text(roomName,style: TextStyle( fontSize: 20.0, color: Colors.blue),),
-
-                Tooltip(
-
-                  message: 'Leave Room',
-
-                  child: IconButton(
-
-                      onPressed: (){},
-
-                      icon: const Icon(Icons.close)
-
-                  ),
-                )
-
-              ],
-
-            ),
-          ],
-        )
+            ],
+          )
 
       ),
 
     );
   }
-
 
 }

@@ -27,9 +27,8 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
   bool _emailMethod = false;
 
-  final TextEditingController _usernameController = TextEditingController();
-
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController(), _passwordController = TextEditingController(),
+      _nameController = TextEditingController(), _profileLinkController = TextEditingController();
 
   TextEditingController _otpController = TextEditingController();
 
@@ -308,43 +307,115 @@ class _SignUpWidgetState extends State<SignUpWidget>{
 
                 child: Center(
 
-                  child: TextFormField(
+                  child: Column(
+                    children: [
+                      TextFormField(
 
-                    controller: _passwordController,
+                        controller: _nameController,
 
-                    obscureText: true,
+                        decoration: const InputDecoration(
 
-                    decoration: const InputDecoration(
+                          hintText: 'Enter Your Name',
 
-                      hintText: 'Enter Password',
+                          enabledBorder: InputBorder.none,
 
-                      enabledBorder: InputBorder.none,
+                          errorBorder: OutlineInputBorder(
 
-                      errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide( color: Colors.red),
 
-                        borderSide: BorderSide( color: Colors.red),
+                          ),
+
+                          disabledBorder: InputBorder.none,
+
+                          focusedBorder: InputBorder.none,
+
+                        ),
+
+                        autovalidateMode: AutovalidateMode.always,
+
+                        validator: (String? value){
+
+                          if(value == null || value.length >= 4) return 'Must be atleast 4 characters';
+
+                          return null;
+
+                        },
 
                       ),
 
-                      disabledBorder: InputBorder.none,
+                      TextFormField(
 
-                      focusedBorder: InputBorder.none,
+                        controller: _profileLinkController,
 
-                    ),
+                        decoration: const InputDecoration(
 
-                    autovalidateMode: AutovalidateMode.always,
+                          hintText: 'Enter URL of your profile',
 
-                    validator: (String? value){
+                          enabledBorder: InputBorder.none,
 
-                      if(value == null || value.length > 25 || value.length < 8) return 'Password length must be between 8 to 25';
+                          errorBorder: OutlineInputBorder(
 
-                      return null;
+                            borderSide: BorderSide( color: Colors.red),
 
-                    },
+                          ),
 
-                    onFieldSubmitted: (s)=>_onContinue(),
+                          disabledBorder: InputBorder.none,
 
-                  ),
+                          focusedBorder: InputBorder.none,
+
+                        ),
+
+                        autovalidateMode: AutovalidateMode.always,
+
+                        validator: (String? value){
+
+                          if(value == null || value.isEmpty) return 'can\'t be empty';
+
+                          return null;
+
+                        },
+
+                      ),
+
+                      TextFormField(
+
+                        controller: _passwordController,
+
+                        obscureText: true,
+
+                        decoration: const InputDecoration(
+
+                          hintText: 'Enter Password',
+
+                          enabledBorder: InputBorder.none,
+
+                          errorBorder: OutlineInputBorder(
+
+                            borderSide: BorderSide( color: Colors.red),
+
+                          ),
+
+                          disabledBorder: InputBorder.none,
+
+                          focusedBorder: InputBorder.none,
+
+                        ),
+
+                        autovalidateMode: AutovalidateMode.always,
+
+                        validator: (String? value){
+
+                          if(value == null || value.length > 25 || value.length < 8) return 'Password length must be between 8 to 25';
+
+                          return null;
+
+                        },
+
+                        onFieldSubmitted: (s)=>_onContinue(),
+
+                      ),
+                    ],
+                  )
 
                 )
 

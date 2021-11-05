@@ -72,7 +72,7 @@ class RoomCard extends StatelessWidget{
               
               StackedProfiles(profileLinks: profileLinks),
 
-              Text( 'Join ' + (roomUserCount == 1 ? adminName : '$adminName & ${roomUserCount-1} others') )
+              Flexible(child: Text( 'Join ' + (roomUserCount == 1 ? adminName : '$adminName & ${roomUserCount-1} others'), overflow: TextOverflow.clip, ))
 
             ],
 
