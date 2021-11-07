@@ -1,14 +1,51 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:unihub/controllers/socket_controller.dart';
+import 'package:unihub/views/snackbar.dart';
 
-class CreateRoomDialog extends StatelessWidget{
+class CreateRoomDialog extends StatefulWidget{
 
-  CreateRoomDialog({Key? key}) : super(key: key);
+  const CreateRoomDialog({Key? key}) : super(key: key);
 
-  final TextEditingController _roomNameController = TextEditingController();
+  @override
 
-  final TextEditingController _roomTopicController = TextEditingController();
+  _CreateRoomDialogState createState() => _CreateRoomDialogState();
+}
+
+class _CreateRoomDialogState extends State<CreateRoomDialog>{
+
+  late final TextEditingController _roomNameController;
+
+  late final TextEditingController _roomTopicController;
+
+  bool _isPublic = true;
+
+  void _toggle() => setState(() => _isPublic=!_isPublic);
+
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    _roomTopicController = TextEditingController();
+
+    _roomNameController = TextEditingController();
+
+  }
+
+
+  @override
+  void dispose() {
+
+    super.dispose();
+
+    _roomNameController.dispose();
+
+    _roomTopicController.dispose();
+
+  }
 
   @override
 
@@ -46,7 +83,7 @@ class CreateRoomDialog extends StatelessWidget{
 
                 autovalidateMode: AutovalidateMode.always,
 
-                validator: (v) => v!.length>=6 ? null : 'RoomName must be of length 6 at least',
+                validator: (v) => v!.length>=4 ? null : 'RoomName must be of length 6 at least',
 
               ),
 
@@ -62,11 +99,112 @@ class CreateRoomDialog extends StatelessWidget{
 
               ),
 
-              // private or public mode option here
+              Row(
+
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                children: [
+
+                  Expanded(
+
+                    child: Column(
+
+                      children: [
+
+                        Radio(
+                            value: true,
+
+                            groupValue: _isPublic,
+
+                            onChanged: (b)=>_toggle()
+
+                        ),
+
+                        Stack(
+
+                          alignment: Alignment.center,
+
+                          children: const [
+
+                            Icon(Icons.public, size: 100, color: Colors.deepPurple,),
+
+                            Icon(Icons.lock_open_outlined, size: 40, color: Colors.green,)
+
+                          ],
+
+                        ),
+
+                        const Text('Public')
+
+                      ],
+
+                    ),
+
+                  ),
+
+                  Expanded(
+
+                    child: Column(
+
+                      children: [
+
+                        Radio(
+                            value: false,
+
+                            groupValue: _isPublic,
+
+                            onChanged: (b)=>_toggle()
+                        ),
+
+                        Stack(
+
+                          alignment: Alignment.center,
+
+                          children: const [
+
+                            Icon(Icons.public, size: 100, color: Colors.blueAccent,),
+
+                            Icon(Icons.lock, size: 40, color: Colors.red,)
+
+                          ],
+
+                        ),
+
+                        const Text('Private')
+
+                      ],
+
+                    ),
+
+                  )
+
+                ],
+
+              ),
 
               TextButton(
 
-                  onPressed: (){},
+                  onPressed: (){
+
+                    if(_roomNameController.text.length>=4){
+
+                      SocketController.socket.emit('create',{
+
+                        'hubName': _roomNameController.text,
+
+                        'hubTopic': _roomTopicController.text,
+
+                        'isPublic': _isPublic
+
+                      });
+
+                    } else {
+
+                      showSnackBar('Invalid RoomName', context, SnackBarType.error);
+
+                    }
+
+                  },
 
                   style: ButtonStyle(
 

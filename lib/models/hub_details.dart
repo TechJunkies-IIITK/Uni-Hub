@@ -11,7 +11,11 @@ class HubDetails{
 
   HubDetails.fromJSON(data):
         name = data['hubName'], id = data['hubID'], isPublic = data['isPublic'],
-        users=data['users'].map((e)=>UserDetails.fromJSON(e)).toList(),
+        users=List.from(data['users']).map((e)=>UserDetails.fromJSON(e)).toList(),
         adminName = data['adminName'] ?? '', topic = data['hubTopic'];
 
+  @override
+  String toString() {
+    return 'HubDetails{name: $name, id: $id, topic: $topic, adminName: $adminName, users: $users, isPublic: $isPublic}';
+  }
 }

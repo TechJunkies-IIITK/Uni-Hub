@@ -9,7 +9,19 @@ import 'package:unihub/models/user_details.dart';
 
 class SocketController {
 
-  static String roomName = '';
+  static String hubName = '',
+      hubTopic = '',
+      agoraToken = '',
+      hubID = ''
+  ;
+
+  static late Function onUserJoin,
+      onPublicHubsSearch,
+      onDisconnect,
+      onCreate
+  ;
+
+  static bool isMicOpen = false;
 
   static List<HubDetails> publicHubs = [];
 
@@ -20,19 +32,20 @@ class SocketController {
   static void connect(){
 
     socket = io('http://$serverBaseUrl',OptionBuilder().setExtraHeaders({
+
       'token' : SharedPrefsController.token,
+
       'userID' : SharedPrefsController.userID
+
     }).setTransports(['websocket','polling']).build());
 
-    socket.onConnect((data) => print('hehe'));
+    //socket.onConnect((data) => print('hehe'));
 
-    socket.onDisconnect((data) => print('not hehe'));
+    socket.onDisconnect((data) => onDisconnect());
 
     initListeners();
 
   }
-
-  static late Function onUserJoin, onPublicHubsSearch;
 
   static void initListeners(){
 
@@ -42,11 +55,42 @@ class SocketController {
         publicHubs.add(HubDetails.fromJSON(obj));
         onPublicHubsSearch();
       }
+      //print(publicHubs);
+    });
+
+    socket.on('create-res',(data){
+      //print(data);
+      if(data['message'] == 'success') {
+        hubName = data['hubName'];
+        hubTopic = data['hubTopic'];
+        hubID = data['hubID'];
+        agoraToken = data['token'];
+        users.clear();
+        for(var obj in data['users']){
+          users.add(UserDetails.fromJSON(obj));
+        }
+        onCreate();
+      }
+    });
+
+    socket.on('join-res',(data){
+      //print('join=>$data');
+      if(data['message'] == 'success') {
+        hubName = data['hubName'];
+        hubTopic = data['hubTopic'];
+        hubID = data['hubID'];
+        agoraToken = data['token'];
+        users.clear();
+        for(var obj in data['users']){
+          users.add(UserDetails.fromJSON(obj));
+        }
+        onCreate();
+      }
     });
 
     socket.on('join-new',(data){
       users.clear();
-      for(var obj in data['hubs']){
+      for(var obj in data['users']){
         users.add(UserDetails.fromJSON(obj));
         onUserJoin();
       }

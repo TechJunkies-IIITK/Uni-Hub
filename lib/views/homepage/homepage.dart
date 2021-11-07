@@ -17,13 +17,27 @@ class HomePage extends StatefulWidget{
 }
 
 class _HomePageState extends State<HomePage>{
-
-  String roomName='';
+  static int buildCounter = 0;
+  @override
+  void initState() {
+    SocketController.connect();
+    SocketController.socket.emit('public',{});
+    SocketController.onUserJoin = (){};
+    SocketController.onPublicHubsSearch = (){
+      setState(() {
+      });
+    };
+    SocketController.onCreate = (){
+      setState(() {
+      });
+    };
+    SocketController.onDisconnect = (){};
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    SocketController.connect();
+    print('build${buildCounter++}');
 
     return Scaffold(
 
@@ -37,10 +51,7 @@ class _HomePageState extends State<HomePage>{
 
       body: ListView(
 
-        children: SocketController.publicHubs.map(
-                (hub) =>
-                RoomCard(adminName: hub.adminName, roomUserCount: hub.users.length, roomName: hub.name, roomTopic: hub.topic, profileLinks: hub.users.map((e) => e.profileLink).toList())
-        ).toList(),
+        children: SocketController.publicHubs.map( (hub)=>RoomCard( hubDetails: hub )).toList(),
 
       ),
 
@@ -52,7 +63,7 @@ class _HomePageState extends State<HomePage>{
 
           TextButton(
 
-            onPressed: ()=>showDialog(context: context, builder: (ctx) => CreateRoomDialog()),
+            onPressed: ()=>showDialog(context: context, builder: (ctx) => const CreateRoomDialog()),
 
             child: const Chip(
 
@@ -92,7 +103,7 @@ class _HomePageState extends State<HomePage>{
 
       ),
 
-      bottomNavigationBar: roomName.isEmpty? const SizedBox(height: 0,width: 0,): BottomAppBar(
+      bottomNavigationBar: SocketController.hubName.isEmpty? const SizedBox(height: 0,width: 0,): BottomAppBar(
 
           child: Column(
 
@@ -112,7 +123,7 @@ class _HomePageState extends State<HomePage>{
 
                         context: context,
 
-                        builder: (ctx) => Container( padding: const EdgeInsets.all(10.0),child: RoomBottomSheet(roomName: roomName))
+                        builder: (ctx) => Container( padding: const EdgeInsets.all(10.0),child: RoomBottomSheet(roomName: SocketController.hubName))
 
                     )
 
@@ -125,7 +136,7 @@ class _HomePageState extends State<HomePage>{
 
                 children: [
 
-                  Text(roomName,style: const TextStyle( fontSize: 20.0, color: Colors.blue),),
+                  Text(SocketController.hubName,style: const TextStyle( fontSize: 20.0, color: Colors.blue),),
 
                   Tooltip(
 

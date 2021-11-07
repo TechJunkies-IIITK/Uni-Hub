@@ -22,7 +22,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
   @override
   void initState() {
     super.initState();
-    SocketController.connect();//remove later
+    //SocketController.connect();//remove later
     SocketController.onUserJoin = (){
       setState(() {});
     };
@@ -155,6 +155,26 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
             )).toList(),
 
           ),*/
+
+          Row(
+
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+            children: [
+
+              IconButton(
+
+                onPressed: ()=>setState(() {
+                  SocketController.isMicOpen = !SocketController.isMicOpen;
+                }),
+
+                icon: SocketController.isMicOpen ? const Icon(Icons.mic) : const Icon(Icons.mic_off),
+
+              )
+
+            ],
+
+          )
 
         ],
 
