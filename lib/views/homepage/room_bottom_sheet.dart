@@ -1,15 +1,32 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:unihub/models/user_details.dart';
+import 'package:unihub/controllers/socket_controller.dart';
 
-class RoomBottomSheet extends StatelessWidget{
+class RoomBottomSheet extends StatefulWidget{
+  final String roomName;
 
-  final List<UserDetails> profiles;
+  const RoomBottomSheet({required this.roomName, Key? key}) : super(key: key);
+
+  @override
+  // ignore: no_logic_in_create_state
+  _RoomBottomSheetState createState() => _RoomBottomSheetState(roomName: roomName);
+}
+
+class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
   final String roomName;
   
-  const RoomBottomSheet({required this.profiles, required this.roomName, Key? key}) : super(key: key);
+  _RoomBottomSheetState({required this.roomName});
+
+  @override
+  void initState() {
+    super.initState();
+    //SocketController.connect();//remove later
+    SocketController.onUserJoin = (){
+      setState(() {});
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +102,7 @@ class RoomBottomSheet extends StatelessWidget{
 
           Wrap(
 
-            children: profiles.where((e) => e.hasSpeakerRole).map((e) => Container(
+            children: SocketController.users.map((e) => Container(
 
               margin: const EdgeInsets.all(10.0),
 
@@ -109,11 +126,13 @@ class RoomBottomSheet extends StatelessWidget{
 
           ),
 
+          /*
+          // future use
           const Text('Audience'),
 
           Wrap(
 
-            children: profiles.where((e) => !e.hasSpeakerRole).map((e) => Container(
+            children: SocketController.users.where((e) => !e.hasSpeakerRole).map((e) => Container(
 
               margin: const EdgeInsets.all(5.0),
 
@@ -135,7 +154,27 @@ class RoomBottomSheet extends StatelessWidget{
 
             )).toList(),
 
-          ),
+          ),*/
+
+          Row(
+
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+            children: [
+
+              IconButton(
+
+                onPressed: ()=>setState(() {
+                  SocketController.isMicOpen = !SocketController.isMicOpen;
+                }),
+
+                icon: SocketController.isMicOpen ? const Icon(Icons.mic) : const Icon(Icons.mic_off),
+
+              )
+
+            ],
+
+          )
 
         ],
 

@@ -1,14 +1,13 @@
 
 class UserDetails{
 
-  final String _name, _profileLink;
+  final String name,profileLink;
 
-  bool hasSpeakerRole;
+  final int userID;
 
-  String get name => _name;
+  UserDetails(this.name, this.profileLink, this.userID);
 
-  String get profileLink => _profileLink;
-
-  UserDetails(String name, String profileLink, this.hasSpeakerRole) : _name = name, _profileLink = profileLink;
+  UserDetails.fromJSON(data) :
+        name = data['name'], profileLink = data['profileLink'], userID = data['userID'];
 
 }

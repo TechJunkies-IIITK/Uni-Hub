@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:unihub/controllers/socket_controller.dart';
 import 'package:unihub/models/user_details.dart';
 import 'package:unihub/views/homepage/create_room_dialog.dart';
 import 'package:unihub/views/homepage/mutable_app_bar.dart';
@@ -9,28 +10,34 @@ import 'package:unihub/views/homepage/private_room_dialog.dart';
 import 'package:unihub/views/homepage/room_bottom_sheet.dart';
 import 'package:unihub/views/homepage/room_card.dart';
 
-class HomePage extends StatelessWidget{
+class HomePage extends StatefulWidget{
   const HomePage({Key? key}) : super(key: key);
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>{
+  static int buildCounter = 0;
+  @override
+  void initState() {
+    SocketController.connect();
+    SocketController.socket.emit('public',{});
+    SocketController.onUserJoin = (){};
+    SocketController.onPublicHubsSearch = (){
+      setState(() {
+      });
+    };
+    SocketController.onCreate = (){
+      setState(() {
+      });
+    };
+    SocketController.onDisconnect = (){};
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    const roomName = 'UniHub Developers';
-
-    final profiles = [
-      UserDetails('User1', 'https://picsum.photos/300', true),
-      UserDetails('User2', 'https://picsum.photos/400', true),
-      UserDetails('User3', 'https://picsum.photos/500', true),
-      UserDetails('User4', 'https://picsum.photos/200/300', true),
-      UserDetails('User5', 'https://picsum.photos/250', true),
-      UserDetails('User6', 'https://picsum.photos/350', false),
-      UserDetails('User7', 'https://picsum.photos/300/200', false),
-      UserDetails('User8', 'https://picsum.photos/500', false),
-      UserDetails('User9', 'https://picsum.photos/300', false),
-      UserDetails('User10', 'https://picsum.photos/400', false),
-    ];
-
-    const  lst = ['https://picsum.photos/300','https://picsum.photos/400','https://picsum.photos/200/300','https://picsum.photos/300/400','https://picsum.photos/250','https://picsum.photos/400','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200','https://picsum.photos/200'];
+    print('build${buildCounter++}');
 
     return Scaffold(
 
@@ -44,13 +51,7 @@ class HomePage extends StatelessWidget{
 
       body: ListView(
 
-        children: [
-
-          const RoomCard(adminName: 'AdminUser', roomUserCount: 15, roomName: 'Hub1', roomTopic: 'jokes', profileLinks: lst),
-
-          RoomCard(adminName: 'AdminUser', roomUserCount: 15, roomName: 'Hub2', roomTopic: 'study', profileLinks: profiles.map((e) => e.profileLink).toList())
-
-        ],
+        children: SocketController.publicHubs.map( (hub)=>RoomCard( hubDetails: hub )).toList(),
 
       ),
 
@@ -62,7 +63,7 @@ class HomePage extends StatelessWidget{
 
           TextButton(
 
-            onPressed: ()=>showDialog(context: context, builder: (ctx) => CreateRoomDialog()),
+            onPressed: ()=>showDialog(context: context, builder: (ctx) => const CreateRoomDialog()),
 
             child: const Chip(
 
@@ -102,64 +103,63 @@ class HomePage extends StatelessWidget{
 
       ),
 
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: SocketController.hubName.isEmpty? const SizedBox(height: 0,width: 0,): BottomAppBar(
 
-        child: Column(
+          child: Column(
 
-          mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.min,
 
-          children: [
+            children: [
 
-            Tooltip(
+              Tooltip(
 
-              message: 'Open Bottom Sheet',
+                message: 'Open Bottom Sheet',
 
-              child: IconButton(
+                child: IconButton(
 
-                  icon: const Icon(Icons.remove),
+                    icon: const Icon(Icons.remove),
 
-                  onPressed: () => showModalBottomSheet(
+                    onPressed: () => showModalBottomSheet(
 
-                      context: context,
+                        context: context,
 
-                      builder: (ctx) => Container( padding: const EdgeInsets.all(10.0),child: RoomBottomSheet(profiles: profiles, roomName: roomName))
+                        builder: (ctx) => Container( padding: const EdgeInsets.all(10.0),child: RoomBottomSheet(roomName: SocketController.hubName))
 
+                    )
+
+                ),
+              ),
+
+              Row(
+
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                children: [
+
+                  Text(SocketController.hubName,style: const TextStyle( fontSize: 20.0, color: Colors.blue),),
+
+                  Tooltip(
+
+                    message: 'Leave Room',
+
+                    child: IconButton(
+
+                        onPressed: (){},
+
+                        icon: const Icon(Icons.close)
+
+                    ),
                   )
 
+                ],
+
               ),
-            ),
-
-            Row(
-
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-              children: [
-
-                const Text(roomName,style: TextStyle( fontSize: 20.0, color: Colors.blue),),
-
-                Tooltip(
-
-                  message: 'Leave Room',
-
-                  child: IconButton(
-
-                      onPressed: (){},
-
-                      icon: const Icon(Icons.close)
-
-                  ),
-                )
-
-              ],
-
-            ),
-          ],
-        )
+            ],
+          )
 
       ),
 
     );
   }
-
 
 }

@@ -2,27 +2,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:unihub/models/hub_details.dart';
 import 'package:unihub/views/homepage/stacked_profiles.dart';
 
 class RoomCard extends StatelessWidget{
 
-  final String roomName, adminName, roomTopic;
+  final HubDetails hubDetails;
 
-  final int roomUserCount;
-
-  final List<String> profileLinks;
-
-  const RoomCard({
-
-    required this.adminName,
-
-    required this.roomUserCount,
-
-    required this.roomName,
-
-    required this.roomTopic,
-
-    required this.profileLinks, Key? key}) : super(key: key);
+  const RoomCard({required this.hubDetails, Key? key}) : super(key: key);
 
   @override
 
@@ -50,16 +37,20 @@ class RoomCard extends StatelessWidget{
 
         children: [
 
-          Text(roomName ,
+          Text(hubDetails.name ,
+
             style: const TextStyle( fontSize: 20.0, color: Colors.yellowAccent, fontWeight: FontWeight.bold),
+
           ),
 
           Align(
 
             alignment: Alignment.centerLeft,
 
-            child: Text(roomTopic,
+            child: Text(hubDetails.topic,
+
               style: const TextStyle( color: Colors.black, fontWeight: FontWeight.w500,),
+
             ),
 
           ),
@@ -70,9 +61,9 @@ class RoomCard extends StatelessWidget{
 
             children: [
               
-              StackedProfiles(profileLinks: profileLinks),
+              StackedProfiles(profileLinks: hubDetails.users.map((e) => e.profileLink).toList()),
 
-              Text( 'Join ' + (roomUserCount == 1 ? adminName : '$adminName & ${roomUserCount-1} others') )
+              Flexible(child: Text( 'Join ' + (hubDetails.users.length == 1 ? hubDetails.adminName : '${hubDetails.adminName} & ${hubDetails.users.length-1} others'), overflow: TextOverflow.clip, ))
 
             ],
 
@@ -80,7 +71,7 @@ class RoomCard extends StatelessWidget{
 
           TextButton(
 
-            onPressed: (){/*join room*/},
+            onPressed: (){},
 
             child: const Chip(
 
