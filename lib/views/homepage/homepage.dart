@@ -22,7 +22,10 @@ class _HomePageState extends State<HomePage>{
   void initState() {
     SocketController.connect();
     SocketController.socket.emit('public',{});
-    SocketController.onUserJoin = (){};
+    SocketController.onUserJoin = (){
+      setState(() {
+      });
+    };
     SocketController.onPublicHubsSearch = (){
       setState(() {
       });
@@ -63,7 +66,7 @@ class _HomePageState extends State<HomePage>{
 
           TextButton(
 
-            onPressed: ()=>showDialog(context: context, builder: (ctx) => const CreateRoomDialog()),
+            onPressed: ()=>showDialog(context: context, builder: (ctx) => const SingleChildScrollView(child: CreateRoomDialog(),)),
 
             child: const Chip(
 

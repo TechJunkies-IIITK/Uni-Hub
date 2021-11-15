@@ -15,6 +15,8 @@ class SocketController {
       hubID = ''
   ;
 
+  //static int adminID = 0;
+
   static late Function onUserJoin,
       onPublicHubsSearch,
       onDisconnect,
@@ -65,6 +67,7 @@ class SocketController {
         hubTopic = data['hubTopic'];
         hubID = data['hubID'];
         agoraToken = data['token'];
+        //adminID = data['adminID'];
         users.clear();
         for(var obj in data['users']){
           users.add(UserDetails.fromJSON(obj));
@@ -80,6 +83,7 @@ class SocketController {
         hubTopic = data['hubTopic'];
         hubID = data['hubID'];
         agoraToken = data['token'];
+        //adminID = data['adminID'];
         users.clear();
         for(var obj in data['users']){
           users.add(UserDetails.fromJSON(obj));

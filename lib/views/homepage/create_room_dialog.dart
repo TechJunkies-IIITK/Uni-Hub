@@ -204,6 +204,8 @@ class _CreateRoomDialogState extends State<CreateRoomDialog>{
 
                     }
 
+                    if(Navigator.canPop(context)) Navigator.pop(context);
+
                   },
 
                   style: ButtonStyle(

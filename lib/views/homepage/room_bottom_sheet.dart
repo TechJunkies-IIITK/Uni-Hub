@@ -1,7 +1,12 @@
 
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:unihub/controllers/shared_preferences_controller.dart';
 import 'package:unihub/controllers/socket_controller.dart';
+import 'package:unihub/config.dart' as config;
 
 class RoomBottomSheet extends StatefulWidget{
   final String roomName;
@@ -15,7 +20,64 @@ class RoomBottomSheet extends StatefulWidget{
 
 class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
+  late final RtcEngine _engine;
+
   final String roomName;
+
+  bool isMicOpen = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _engine.destroy();
+  }
+
+  _initEngine() async {
+    _engine = await RtcEngine.createWithContext(RtcEngineContext(config.appId));
+    _addListeners();
+
+    await _engine.enableAudio();
+    await _engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
+    await _engine.setClientRole(ClientRole.Broadcaster);
+    _joinChannel();
+  }
+
+  _addListeners() {
+    _engine.setEventHandler(RtcEngineEventHandler(
+      joinChannelSuccess: (channel, uid, elapsed) {
+        print('joinChannelSuccess $channel $uid $elapsed');
+      },
+      leaveChannel: (stats) async {
+        print('leaveChannel ${stats.toJson()}');
+      },
+    ));
+  }
+
+  _joinChannel() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      await Permission.microphone.request();
+    }
+
+    await _engine
+        .joinChannel(SocketController.agoraToken, SocketController.hubID, null, SharedPrefsController.userID)
+        .catchError((onError) {
+      print('error ${onError.toString()}');
+    });
+  }
+
+  leaveChannel() async {
+    await _engine.leaveChannel();
+  }
+
+  _switchMicrophone() {
+    _engine.enableLocalAudio(!isMicOpen).then((value) {
+      setState(() {
+        isMicOpen = !isMicOpen;
+      });
+    }).catchError((err) {
+      print('enableLocalAudio $err');
+    });
+  }
   
   _RoomBottomSheetState({required this.roomName});
 
@@ -26,6 +88,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
     SocketController.onUserJoin = (){
       setState(() {});
     };
+    _initEngine();
   }
 
   @override
@@ -164,11 +227,9 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
               IconButton(
 
-                onPressed: ()=>setState(() {
-                  SocketController.isMicOpen = !SocketController.isMicOpen;
-                }),
+                onPressed: _switchMicrophone,
 
-                icon: SocketController.isMicOpen ? const Icon(Icons.mic) : const Icon(Icons.mic_off),
+                icon: isMicOpen ? const Icon(Icons.mic) : const Icon(Icons.mic_off),
 
               )
 
