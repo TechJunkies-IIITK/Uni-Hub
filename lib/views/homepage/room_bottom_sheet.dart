@@ -1,7 +1,14 @@
 
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:unihub/controllers/shared_preferences_controller.dart';
 import 'package:unihub/controllers/socket_controller.dart';
+import 'package:unihub/config.dart' as config;
+import 'package:unihub/views/snackbar.dart';
 
 class RoomBottomSheet extends StatefulWidget{
   final String roomName;
@@ -15,7 +22,64 @@ class RoomBottomSheet extends StatefulWidget{
 
 class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
+  late final RtcEngine _engine;
+
   final String roomName;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _engine.destroy();
+  }
+
+  _initEngine() async {
+    _engine = await RtcEngine.createWithContext(RtcEngineContext(config.appId));
+    _addListeners();
+
+    await _engine.enableAudio();
+    await _engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
+    await _engine.setClientRole(ClientRole.Broadcaster);
+    _joinChannel();
+  }
+
+  _addListeners() {
+    _engine.setEventHandler(RtcEngineEventHandler(
+      joinChannelSuccess: (channel, uid, elapsed) {
+        print('joinChannelSuccess $channel $uid $elapsed');
+      },
+      leaveChannel: (stats) async {
+        print('leaveChannel ${stats.toJson()}');
+      },
+    ));
+  }
+
+  _joinChannel() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      await Permission.microphone.request();
+    }
+
+    await _engine
+        .joinChannel(SocketController.agoraToken, SocketController.hubID, null, SharedPrefsController.userID)
+        .catchError((onError) {
+      print('error ${onError.toString()}');
+    });
+  }
+
+  _leaveChannel(context) async {
+    SocketController.socket.emit('leave',{});
+    await _engine.leaveChannel();
+    if(Navigator.canPop(context)) Navigator.pop(context);
+  }
+
+  _switchMicrophone() {
+    _engine.enableLocalAudio(!SocketController.isMicOpen).then((value) {
+      setState(() {
+        SocketController.isMicOpen = !SocketController.isMicOpen;
+      });
+    }).catchError((err) {
+      print('enableLocalAudio $err');
+    });
+  }
   
   _RoomBottomSheetState({required this.roomName});
 
@@ -26,6 +90,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
     SocketController.onUserJoin = (){
       setState(() {});
     };
+    _initEngine();
   }
 
   @override
@@ -45,7 +110,25 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
             children: [
 
-              const SizedBox( width: 100, height: 5,),
+              Tooltip(
+
+                message: 'Copy Hub Code',
+
+                child: GestureDetector(
+
+                  child: Text(SocketController.hubCode),
+
+                  onLongPress: (){
+
+                    Clipboard.setData( ClipboardData(text: SocketController.hubCode) );
+
+                    showSnackBar("Code copied to clipboard!", context, SnackBarType.info);
+
+                  },
+
+                ),
+
+              ),
 
               Tooltip(
 
@@ -72,7 +155,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
                 ),
 
-                onPressed: (){},
+                onPressed: ()=>_leaveChannel(context),
 
                 child: Row(
 
@@ -164,9 +247,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
               IconButton(
 
-                onPressed: ()=>setState(() {
-                  SocketController.isMicOpen = !SocketController.isMicOpen;
-                }),
+                onPressed: _switchMicrophone,
 
                 icon: SocketController.isMicOpen ? const Icon(Icons.mic) : const Icon(Icons.mic_off),
 

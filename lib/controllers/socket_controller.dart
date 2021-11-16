@@ -12,14 +12,13 @@ class SocketController {
   static String hubName = '',
       hubTopic = '',
       agoraToken = '',
-      hubID = ''
+      hubID = '',
+      hubCode = ''
   ;
 
-  static late Function onUserJoin,
-      onPublicHubsSearch,
-      onDisconnect,
-      onCreate
-  ;
+  //static int adminID = 0;
+
+  static late Function onChange, onUserJoin;
 
   static bool isMicOpen = false;
 
@@ -41,7 +40,7 @@ class SocketController {
 
     //socket.onConnect((data) => print('hehe'));
 
-    socket.onDisconnect((data) => onDisconnect());
+    socket.onDisconnect((data) => onChange());
 
     initListeners();
 
@@ -53,7 +52,7 @@ class SocketController {
       publicHubs.clear();
       for(var obj in data['hubs']){
         publicHubs.add(HubDetails.fromJSON(obj));
-        onPublicHubsSearch();
+        onChange();
       }
       //print(publicHubs);
     });
@@ -65,11 +64,13 @@ class SocketController {
         hubTopic = data['hubTopic'];
         hubID = data['hubID'];
         agoraToken = data['token'];
+        hubCode = data['hubCode'];
+        //adminID = data['adminID'];
         users.clear();
         for(var obj in data['users']){
           users.add(UserDetails.fromJSON(obj));
         }
-        onCreate();
+        onChange();
       }
     });
 
@@ -80,20 +81,29 @@ class SocketController {
         hubTopic = data['hubTopic'];
         hubID = data['hubID'];
         agoraToken = data['token'];
+        hubCode = data['hubCode'];
+        //adminID = data['adminID'];
         users.clear();
         for(var obj in data['users']){
           users.add(UserDetails.fromJSON(obj));
         }
-        onCreate();
+        onChange();
       }
     });
 
-    socket.on('join-new',(data){
+    socket.on('update',(data){
       users.clear();
       for(var obj in data['users']){
         users.add(UserDetails.fromJSON(obj));
         onUserJoin();
       }
+    });
+
+    socket.on('leave-res',(data){
+      hubName = hubTopic = hubID = agoraToken = hubCode = '';
+      users = [];
+      isMicOpen = false;
+      onChange();
     });
 
   }

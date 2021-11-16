@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:unihub/controllers/socket_controller.dart';
 import 'package:unihub/models/hub_details.dart';
 import 'package:unihub/views/homepage/stacked_profiles.dart';
 
@@ -71,7 +72,17 @@ class RoomCard extends StatelessWidget{
 
           TextButton(
 
-            onPressed: (){},
+            onPressed: (){
+
+              SocketController.socket.emit('join',{
+
+                'isPublic': true,
+
+                'hubID': hubDetails.id
+
+              });
+
+            },
 
             child: const Chip(
 

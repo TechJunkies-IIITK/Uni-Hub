@@ -18,20 +18,18 @@ class HomePage extends StatefulWidget{
 
 class _HomePageState extends State<HomePage>{
   static int buildCounter = 0;
+
   @override
   void initState() {
+    super.initState();
     SocketController.connect();
     SocketController.socket.emit('public',{});
+    SocketController.onChange = (){
+      print('change detected rebuilding');
+      setState(() {
+      });
+    };
     SocketController.onUserJoin = (){};
-    SocketController.onPublicHubsSearch = (){
-      setState(() {
-      });
-    };
-    SocketController.onCreate = (){
-      setState(() {
-      });
-    };
-    SocketController.onDisconnect = (){};
   }
 
   @override
@@ -55,7 +53,7 @@ class _HomePageState extends State<HomePage>{
 
       ),
 
-      floatingActionButton: Column(
+      floatingActionButton: SocketController.hubName.isNotEmpty? const SizedBox(height: 0,width: 0): Column(
 
         mainAxisSize: MainAxisSize.min,
 
@@ -63,7 +61,7 @@ class _HomePageState extends State<HomePage>{
 
           TextButton(
 
-            onPressed: ()=>showDialog(context: context, builder: (ctx) => const CreateRoomDialog()),
+            onPressed: ()=>showDialog(context: context, builder: (ctx) => const SingleChildScrollView(child: CreateRoomDialog(),)),
 
             child: const Chip(
 

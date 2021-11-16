@@ -71,6 +71,8 @@ class PrivateRoomDialog extends StatelessWidget{
 
                     }
 
+                    if(Navigator.canPop(context)) Navigator.pop(context);
+
                   },
 
                   style: ButtonStyle(
