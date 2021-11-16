@@ -18,7 +18,7 @@ class SocketController {
 
   //static int adminID = 0;
 
-  static late Function onChange, onUserJoin;
+  static late Function onChange, onUserJoin, onError;
 
   static bool isMicOpen = false;
 
@@ -71,6 +71,8 @@ class SocketController {
           users.add(UserDetails.fromJSON(obj));
         }
         onChange();
+      }else{
+        onError(data['message']);
       }
     });
 
@@ -88,6 +90,8 @@ class SocketController {
           users.add(UserDetails.fromJSON(obj));
         }
         onChange();
+      }else{
+        onError(data['message']);
       }
     });
 

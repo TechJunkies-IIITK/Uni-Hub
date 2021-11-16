@@ -11,13 +11,13 @@ Color _getColorByType(dynamic type){
 
   switch(type){
 
-    case SnackBarType.success: return Colors.lightGreen;
+    case SnackBarType.success: return Colors.green;
 
-    case SnackBarType.error: return Colors.redAccent;
+    case SnackBarType.error: return Colors.red;
 
-    case SnackBarType.info: return Colors.tealAccent;
+    case SnackBarType.info: return Colors.teal;
 
-    default: return Colors.white;
+    default: return Colors.blue;
 
   }
 }
