@@ -3,10 +3,12 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:unihub/controllers/shared_preferences_controller.dart';
 import 'package:unihub/controllers/socket_controller.dart';
 import 'package:unihub/config.dart' as config;
+import 'package:unihub/views/snackbar.dart';
 
 class RoomBottomSheet extends StatefulWidget{
   final String roomName;
@@ -23,8 +25,6 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
   late final RtcEngine _engine;
 
   final String roomName;
-
-  bool isMicOpen = false;
 
   @override
   void dispose() {
@@ -65,14 +65,16 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
     });
   }
 
-  leaveChannel() async {
+  _leaveChannel(context) async {
+    SocketController.socket.emit('leave',{});
     await _engine.leaveChannel();
+    if(Navigator.canPop(context)) Navigator.pop(context);
   }
 
   _switchMicrophone() {
-    _engine.enableLocalAudio(!isMicOpen).then((value) {
+    _engine.enableLocalAudio(!SocketController.isMicOpen).then((value) {
       setState(() {
-        isMicOpen = !isMicOpen;
+        SocketController.isMicOpen = !SocketController.isMicOpen;
       });
     }).catchError((err) {
       print('enableLocalAudio $err');
@@ -108,7 +110,25 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
             children: [
 
-              const SizedBox( width: 100, height: 5,),
+              Tooltip(
+
+                message: 'Copy Hub Code',
+
+                child: GestureDetector(
+
+                  child: Text(SocketController.hubCode),
+
+                  onLongPress: (){
+
+                    Clipboard.setData( ClipboardData(text: SocketController.hubCode) );
+
+                    showSnackBar("Code copied to clipboard!", context, SnackBarType.info);
+
+                  },
+
+                ),
+
+              ),
 
               Tooltip(
 
@@ -135,7 +155,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
                 ),
 
-                onPressed: (){},
+                onPressed: ()=>_leaveChannel(context),
 
                 child: Row(
 
@@ -229,7 +249,7 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
                 onPressed: _switchMicrophone,
 
-                icon: isMicOpen ? const Icon(Icons.mic) : const Icon(Icons.mic_off),
+                icon: SocketController.isMicOpen ? const Icon(Icons.mic) : const Icon(Icons.mic_off),
 
               )
 

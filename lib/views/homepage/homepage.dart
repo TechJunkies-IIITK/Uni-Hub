@@ -18,23 +18,18 @@ class HomePage extends StatefulWidget{
 
 class _HomePageState extends State<HomePage>{
   static int buildCounter = 0;
+
   @override
   void initState() {
+    super.initState();
     SocketController.connect();
     SocketController.socket.emit('public',{});
-    SocketController.onUserJoin = (){
+    SocketController.onChange = (){
+      print('change detected rebuilding');
       setState(() {
       });
     };
-    SocketController.onPublicHubsSearch = (){
-      setState(() {
-      });
-    };
-    SocketController.onCreate = (){
-      setState(() {
-      });
-    };
-    SocketController.onDisconnect = (){};
+    SocketController.onUserJoin = (){};
   }
 
   @override
@@ -58,7 +53,7 @@ class _HomePageState extends State<HomePage>{
 
       ),
 
-      floatingActionButton: Column(
+      floatingActionButton: SocketController.hubName.isNotEmpty? const SizedBox(height: 0,width: 0): Column(
 
         mainAxisSize: MainAxisSize.min,
 
