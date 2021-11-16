@@ -9,6 +9,7 @@ import 'package:unihub/views/homepage/mutable_app_bar.dart';
 import 'package:unihub/views/homepage/private_room_dialog.dart';
 import 'package:unihub/views/homepage/room_bottom_sheet.dart';
 import 'package:unihub/views/homepage/room_card.dart';
+import 'package:unihub/views/snackbar.dart';
 
 class HomePage extends StatefulWidget{
   const HomePage({Key? key}) : super(key: key);
@@ -36,6 +37,8 @@ class _HomePageState extends State<HomePage>{
   Widget build(BuildContext context) {
 
     print('build${buildCounter++}');
+
+    SocketController.onError = (msg) => showSnackBar(msg, context, SnackBarType.error);
 
     return Scaffold(
 
