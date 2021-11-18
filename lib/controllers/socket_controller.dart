@@ -99,8 +99,9 @@ class SocketController {
       users.clear();
       for(var obj in data['users']){
         users.add(UserDetails.fromJSON(obj));
-        onUserJoin();
       }
+      //onChange();
+      onUserJoin();
     });
 
     socket.on('leave-res',(data){

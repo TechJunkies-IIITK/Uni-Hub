@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage>{
     SocketController.connect();
     SocketController.socket.emit('public',{});
     SocketController.onChange = (){
-      print('change detected rebuilding');
+      print(SocketController.users);
       setState(() {
       });
     };

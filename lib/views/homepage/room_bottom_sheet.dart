@@ -114,17 +114,23 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
                 message: 'Copy Hub Code',
 
-                child: GestureDetector(
+                child: SizedBox(
 
-                  child: Text(SocketController.hubCode),
+                    width: 100,
 
-                  onLongPress: (){
+                    child: TextButton(
 
-                    Clipboard.setData( ClipboardData(text: SocketController.hubCode) );
+                      child: Text(SocketController.hubCode),
 
-                    showSnackBar("Code copied to clipboard!", context, SnackBarType.info);
+                      onPressed: (){
 
-                  },
+                        Clipboard.setData( ClipboardData(text: SocketController.hubCode) );
+
+                        showSnackBar("Code copied to clipboard!", context, SnackBarType.info);
+
+                      },
+
+                    )
 
                 ),
 
