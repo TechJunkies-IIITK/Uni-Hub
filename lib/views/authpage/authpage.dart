@@ -31,7 +31,7 @@ class _AuthPageState extends State<AuthPage>{
     if(await AuthController.verify(token: SharedPrefsController.token, userID: SharedPrefsController.userID)){
 
       //user has already logged in
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushNamedAndRemoveUntil(context, '/home',ModalRoute.withName('/home'));
 
     }
   }

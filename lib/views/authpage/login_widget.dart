@@ -132,9 +132,15 @@ class LoginWidget extends StatelessWidget{
 
                   SharedPrefsController.setUserID(data['userID']);
 
+                  SharedPrefsController.setName(data['name']);
+
+                  SharedPrefsController.setPhoneEmail(data['phoneOrEmail']);
+
+                  SharedPrefsController.setProfileLink(data['profileLink']);
+
                   showSnackBar("Login Success", context, SnackBarType.success);
 
-                  Navigator.pushNamed(context, '/home');
+                  Navigator.pushNamedAndRemoveUntil(context, '/home',ModalRoute.withName('/home'));
 
                 }
 
