@@ -116,8 +116,6 @@ class _RoomBottomSheetState extends State<RoomBottomSheet>{
 
                 child: SizedBox(
 
-                    height: 5,
-
                     width: 100,
 
                     child: TextButton(
