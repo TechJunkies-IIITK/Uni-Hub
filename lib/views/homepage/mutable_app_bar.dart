@@ -30,8 +30,6 @@ class _MutableAppBarState extends State<MutableAppBar>{
 
     return AppBar(
 
-      automaticallyImplyLeading: false,
-
       centerTitle: true,
 
       title: _isSearchMode ? TextField(

@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:unihub/controllers/shared_preferences_controller.dart';
 import 'package:unihub/controllers/socket_controller.dart';
 import 'package:unihub/models/user_details.dart';
 import 'package:unihub/views/homepage/create_room_dialog.dart';
@@ -18,7 +19,7 @@ class HomePage extends StatefulWidget{
 }
 
 class _HomePageState extends State<HomePage>{
-  static int buildCounter = 0;
+  //static int buildCounter = 0;
 
   @override
   void initState() {
@@ -26,7 +27,6 @@ class _HomePageState extends State<HomePage>{
     SocketController.connect();
     SocketController.socket.emit('public',{});
     SocketController.onChange = (){
-      print(SocketController.users);
       setState(() {
       });
     };
@@ -35,8 +35,6 @@ class _HomePageState extends State<HomePage>{
 
   @override
   Widget build(BuildContext context) {
-
-    print('build${buildCounter++}');
 
     SocketController.onError = (msg) => showSnackBar(msg, context, SnackBarType.error);
 
@@ -47,6 +45,47 @@ class _HomePageState extends State<HomePage>{
         preferredSize: const Size.fromHeight(60),
 
         child: MutableAppBar( onSearch: (value){ /*perform search*/ }, ),
+
+      ),
+
+      drawer: Drawer(
+
+        child: Container(
+          
+          padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+          
+          child: Row(
+
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+
+              //const Text('User Info', style: TextStyle( fontWeight: FontWeight.bold ),),
+
+              CircleAvatar(
+                backgroundImage: NetworkImage(SharedPrefsController.profileLink),),
+
+              Column(
+
+                mainAxisSize: MainAxisSize.min,
+
+                crossAxisAlignment: CrossAxisAlignment.start,
+
+                children: [
+
+                  Text(SharedPrefsController.phoneOrEmail, style: const TextStyle(fontWeight: FontWeight.w800,color: Colors.blue),),
+
+                  Text(SharedPrefsController.name,style: const TextStyle(color: Colors.black),)
+
+                ],
+
+              )
+
+            ],
+
+          ),
+          
+        )
 
       ),
 
