@@ -89,7 +89,17 @@ class _HomePageState extends State<HomePage>{
 
       ),
 
-      body: ListView(
+      body: SocketController.publicHubs.isEmpty ? Center(
+        child: Row(
+          children: const [
+
+            Icon(Icons.announcement, size: 30,color: Colors.orange,),
+
+            Text('No Hubs Found!', style: TextStyle(color: Colors.red),)
+
+          ],
+        ),
+      ) : ListView(
 
         children: SocketController.publicHubs.map( (hub)=>RoomCard( hubDetails: hub )).toList(),
 
