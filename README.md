@@ -1,6 +1,8 @@
-# uni-hub
+# Uni-Hub
 
 A real time voice chat application.
+
+## View a demo of our app [here!](https://drive.google.com/file/d/17lo8H7c34olpV6NPQBgg-QyN490d9NCq/view?usp=sharing) 
 
 ## Getting Started
 
